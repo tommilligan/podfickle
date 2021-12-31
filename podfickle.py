@@ -256,6 +256,13 @@ class AO3:
         password.submit()
         return self
 
+    def _fill_warnings(self, warnings: Iterable[str]) -> None:
+        for warning in warnings:
+            if warning == "Creator Chose Not To Use Archive Warnings":
+                self._click_checkbox_value("Choose Not To Use Archive Warnings")
+        else:
+            self._click_checkbox_value(warning)
+
     def new_podfic(self, podfic: PodficWork) -> "AO3":
         work = podfic.parent.work
 
@@ -267,9 +274,10 @@ class AO3:
         self._select_value_text("work_rating_string", work_rating)
 
         # Fill in other tags and data
-        self._click_checkbox_values(work.warning)
+        self._fill_warnings(work.warning)
         self._fill_field_tags("work_fandom_autocomplete", work.fandom)
-        self._click_checkbox_values(work.category)
+        for category in work.category:
+            self._click_checkbox_value(category)
         self._fill_field_tags("work_relationship_autocomplete", work.relationship)
         self._fill_field_tags("work_character_autocomplete", work.character)
 
@@ -358,9 +366,8 @@ class AO3:
             )
         )
 
-    def _click_checkbox_values(self, values: Iterable[str]) -> None:
-        for value in values:
-            self.driver.find_element_by_xpath(f"//input[@value='{value}']").click()
+    def _click_checkbox_value(self, value: str) -> None:
+        self.driver.find_element_by_xpath(f"//input[@value='{value}']").click()
 
     def _fill_field_tags(self, id_: str, values: Iterable[str]) -> None:
         _fill_tags(self._element_by_id(id_), values)
