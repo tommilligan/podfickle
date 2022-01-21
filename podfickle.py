@@ -260,8 +260,8 @@ class AO3:
         for warning in warnings:
             if warning == "Creator Chose Not To Use Archive Warnings":
                 self._click_checkbox_value("Choose Not To Use Archive Warnings")
-        else:
-            self._click_checkbox_value(warning)
+            else:
+                self._click_checkbox_value(warning)
 
     def new_podfic(self, podfic: PodficWork) -> "AO3":
         work = podfic.parent.work
@@ -302,7 +302,12 @@ class AO3:
                     series_name
                 )
             else:
-                self._select_value_text("work_series_attributes_id", series_name)
+                try:
+                    self._select_value_text("work_series_attributes_id", series_name)
+                except NoSuchElementException:
+                    _log.warning(
+                        "This is a new podfic series but not the first part. No new series will be created."
+                    )
 
         self._select_value_text("work_language_id", "English")
 
