@@ -292,7 +292,7 @@ class AO3:
         self._element_by_id("work_endnotes").send_keys(podfic.notes())
 
         self._element_by_id("parent-options-show").click()
-        self._element_by_id("work_parent_attributes_url").send_keys(work.url)
+        self._element_by_id("work_parent_work_relationships_attributes_0_url").send_keys(work.url)
 
         if work.series_part is not None:
             self._element_by_id("series-options-show").click()
@@ -431,6 +431,7 @@ def run_post(args: argparse.Namespace) -> None:
         template_notes=template_notes,
         urls=config.urls.clean_urls(),
     )
+    _log.info(podfic.content())
 
     ao3.home().new_podfic(podfic=podfic)
 
